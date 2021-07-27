@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 vColor;
+varying vec4 fColor;
+uniform float theta;
+uniform float rotate;
+uniform bool grid;
+
+void
+main()
+{
+	mat4 rx = mat4(1,0,0,0,
+					0,cos(theta),-sin(theta),0,
+					0,sin(theta),cos(theta),0,
+					0,0,0,1);
+	mat4 ry = mat4(cos(theta),0,-sin(theta),0,
+					0,1,0,0,
+					sin(theta),0,cos(theta),0,
+					0,0,0,1);
+	mat4 rz = mat4(cos(theta),-sin(theta),0,0,
+					sin(theta),cos(theta),0,0,
+					0,0,1,0,
+					0,0,0,1);
+
+	if (rotate == 0.0) {
+		gl_Position = rx * vPosition;
+	} else if (rotate == 1.0) {
+		gl_Position = ry * vPosition;
+	} else if (rotate == 2.0) {
+		gl_Position = rz * vPosition;
+	} else {
+		gl_Position = vPosition;
+	}
+
+	if (grid) {
+		fColor = vec4(0.0, 0.0, 0.0, 1.0);
+	} else {
+		fColor = vColor;
+	}
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec4 fColor;
+
+void
+main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="task5.js"></script>
+</head>
+
+<body>
+<input type="radio" id="xAxis" name="axis" value="0.0">
+<label for="xAxis">x-axis</label><br>
+<input type="radio" id="yAxis" name="axis" value="1.0">
+<label for="yAxis">y-axis</label><br>
+<input type="radio" id="zAxis" name="axis" value="2.0">
+<label for="zAxis">z-axis</label><br>
+<input type="radio" id="none" name="axis" value="-1.0">
+<label for="none">none</label>
+</br>
+<button id="wireButton">Turn wireframe on/off</button>
+</br>
+<button id="nButton">Swith High/Low triangle count</button>
+</br>
+<canvas id="gl-canvas" width="700" height="700">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+</body>
+</html>
